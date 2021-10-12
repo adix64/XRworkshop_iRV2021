@@ -8,6 +8,7 @@ public class ThirdPersonCam : MonoBehaviour
     public Transform target;
     public Vector3 cameraOffset;
     public float followSpeed = 3f;
+    public float followSpeedKeepClose = 3f;
 
     // Start is called before the first frame update
     private void Start()
@@ -24,8 +25,13 @@ public class ThirdPersonCam : MonoBehaviour
 
         Vector3 newCameraPosition = target.position + transform.TransformDirection(cameraOffset);
         //lazy camera interpolation:
-        transform.position = Vector3.Lerp(transform.position,
-                                          newCameraPosition,
-                                          Mathf.Clamp01(Time.deltaTime * followSpeed));
+
+        Vector3 cameraMoveDir = newCameraPosition - transform.position;
+        if (cameraMoveDir.magnitude > 10e-3f)
+        {
+            transform.position += cameraMoveDir.normalized *
+                                Mathf.Min(cameraMoveDir.magnitude, Time.deltaTime * followSpeed *
+                                (1 + cameraMoveDir.magnitude * followSpeedKeepClose));
+        }
     }
 }
