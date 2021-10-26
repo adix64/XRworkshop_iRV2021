@@ -14,6 +14,11 @@ public class Opponent : Fighter
 
     public bool offensive = false;
 
+    private void OnEnable()
+    {
+        GameObject.FindObjectOfType<Player>().opponents.Add(transform);
+    }
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -31,16 +36,17 @@ public class Opponent : Fighter
     // Update is called once per frame
     private void Update()
     {
-        moveDir = (player.position - transform.position);
+        Vector3 toPlayer = (player.position - transform.position);
+        toPlayer = Vector3.Scale(toPlayer, new Vector3(1, 0, 1));
 
-        if (offensive && moveDir.magnitude < attackDistance)
+        if (offensive && toPlayer.magnitude < attackDistance)
             animator.SetTrigger("Punch");
 
-        if (moveDir.magnitude < stopDistance)
-            moveDir = Vector3.zero;
-
-        moveDir = moveDir.normalized;
-
+        if (toPlayer.magnitude < stopDistance)
+            toPlayer = Vector3.zero;
+        animator.SetFloat("distToOpponent", toPlayer.magnitude);
+        moveDir = toPlayer.normalized;
+        ApplyRootRotation(moveDir);
         base.FighterUpdate();
     }
 }

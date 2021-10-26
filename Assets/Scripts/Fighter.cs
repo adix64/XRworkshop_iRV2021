@@ -19,6 +19,7 @@ public class Fighter : MonoBehaviour
     protected AnimatorStateInfo stateInfo;
     protected bool grounded = true;
     protected float timeSinceJumped = 10;
+    protected Vector3 punchLookDir;
 
     // Start is called before the first frame update
     protected void GetCommonComponents()
@@ -37,8 +38,6 @@ public class Fighter : MonoBehaviour
         CheckGrounded();
 
         SetAnimatorMoveParams();
-
-        ApplyRootRotation();
     }
 
     private void OnAnimatorMove()
@@ -46,19 +45,23 @@ public class Fighter : MonoBehaviour
         ApplyRootMotion();
     }
 
-    private void ApplyRootRotation()
+    protected void ApplyRootRotation(Vector3 lookDir)
     {
+        float realRotSpeed = rotSpeed;
         if (stateInfo.IsTag("punch"))
-            return;
+        {
+            lookDir = punchLookDir;
+            realRotSpeed *= 10f;
+        }
         if (transform.position.y < minimumAllowedHeight)
             transform.position = initialPos;
         if (moveDir.magnitude > 10e-3)
         {//daca exista miscare
-            Quaternion targetRotation = Quaternion.LookRotation(moveDir, Vector3.up);
+            Quaternion targetRotation = Quaternion.LookRotation(lookDir, Vector3.up);
             //roteste personajul animativ cu forward in directia deplasarii
             transform.rotation = Quaternion.Slerp(transform.rotation,
                                                     targetRotation,
-                                                    Time.deltaTime * rotSpeed);
+                                                    Mathf.Clamp01(Time.deltaTime * realRotSpeed));
         }
     }
 
@@ -86,7 +89,7 @@ public class Fighter : MonoBehaviour
         animator.SetBool("Grounded", grounded);
     }
 
-    private void ApplyRootMotion()
+    protected void ApplyRootMotion()
     {
         if (!animator.GetBool("Grounded") || timeSinceJumped < 0.25f)//daca e in aer
             return;
