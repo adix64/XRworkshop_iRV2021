@@ -2028,3 +2028,19 @@ AssetImportParameters requested are different than current active one (requested
   custom:video-decoder-webm-vp8: 9c59270c3fd7afecdb556c50c9e8de78 -> 
   custom:audio-decoder-ogg-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
   custom:audio-encoder-webm-vorbis: bf7c407c2cedff20999df2af8eb42d56 -> 
+========================================================================
+Received Import Request.
+  Time since last request: 4069.593102 seconds.
+  path: Assets/Arms.mask
+  artifactKey: Guid(061e20f646fc07445a3bb4d7dcd7c8c2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/Arms.mask using Guid(061e20f646fc07445a3bb4d7dcd7c8c2) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '4998e86386bf6dc9e9123e858ecff583') in 0.032230 seconds 
+  Import took 0.040586 seconds .
+
+========================================================================
+Received Import Request.
+  Time since last request: 7.512353 seconds.
+  path: Assets/CharacterAnimator.controller
+  artifactKey: Guid(7f36bf03f0769e5449c3d1272da478be) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/CharacterAnimator.controller using Guid(7f36bf03f0769e5449c3d1272da478be) Importer(815301076,1909f56bfc062723c751e8b465ee728b)  -> (artifact id: '5e6aece4ce4e5cf5d7ee1ddbe096f471') in 0.159347 seconds 
+  Import took 0.168394 seconds .
+
