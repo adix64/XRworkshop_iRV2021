@@ -91,19 +91,27 @@ public class Fighter : MonoBehaviour
 
     protected void ApplyRootMotion()
     {
-        if (!animator.GetBool("Grounded") || timeSinceJumped < 0.25f)//daca e in aer
-            return;
+        float velY = rigidbody.velocity.y; //componenta verticala a vitezei, calculata de Physics engine
+        if (!animator.GetBool("Grounded") || timeSinceJumped < 0.25f)//in aer
+        {
+            float jumpDirControlBlendF = Mathf.Pow(Mathf.Clamp01(timeSinceJumped * 0.5f), 8f);
+            rigidbody.velocity = Vector3.Lerp(moveDir * moveSpeed, rigidbody.velocity, jumpDirControlBlendF);
+        }
+        else//pe pamant
+        {
+            float rootMotionMoveMagnitude = (animator.deltaPosition / Time.deltaTime).magnitude;
+            rigidbody.velocity = moveDir * rootMotionMoveMagnitude;// moveDir * moveSpeed;
+        }
 
-        float velY = rigidbody.velocity.y;
-        rigidbody.velocity = animator.deltaPosition / Time.deltaTime;// moveDir * moveSpeed;
         rigidbody.velocity = new Vector3(rigidbody.velocity.x,
                                          velY,
                                          rigidbody.velocity.z);
     }
 
     private void SetAnimatorMoveParams()
-    {
-        var characterSpaceMoveDir = transform.InverseTransformDirection(moveDir);
+    {//facem directia de deplasare mai mare ca sa asigure full range in blend tree (e.g. de 1.2 ori mai mare):
+        var characterSpaceMoveDir = transform.InverseTransformDirection(moveDir) * 1.2f;
+
         animator.SetFloat("Forward", characterSpaceMoveDir.z, 0.2f, Time.deltaTime);
         animator.SetFloat("Right", characterSpaceMoveDir.x, 0.2f, Time.deltaTime);
 

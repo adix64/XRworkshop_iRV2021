@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+internal enum TargetOffsetMode
+{ TARGET_PLAYER, CIRCLE_LEFT, CIRCLE_RIGHT, RETREAT, NUM_MODES };
+
 public class Opponent : Fighter
 {
     private UnityEngine.AI.NavMeshAgent agent;
@@ -13,10 +16,18 @@ public class Opponent : Fighter
     public float offensiveRate = 0.2f;
 
     public bool offensive = false;
+    private TargetOffsetMode targetOffsetMode = TargetOffsetMode.TARGET_PLAYER;
+    private Vector3 offsetFromPlayer;
+    public float offsetFromPlayerMagnitude = 2f;
 
     private void OnEnable()
     {
         GameObject.FindObjectOfType<Player>().opponents.Add(transform);
+    }
+
+    private void OnDestroy()
+    {
+        GameObject.FindObjectOfType<Player>().opponents.Remove(transform);
     }
 
     // Start is called before the first frame update
@@ -24,6 +35,32 @@ public class Opponent : Fighter
     {
         GetCommonComponents();
         StartCoroutine(SetOffensiveState());
+        StartCoroutine(SetTargetOffsetState());
+    }
+
+    private IEnumerator SetTargetOffsetState()//will circle around player
+    {
+        yield return new WaitForSeconds(1f);
+        targetOffsetMode = (TargetOffsetMode)Random.Range(0, (int)TargetOffsetMode.NUM_MODES);
+        switch (targetOffsetMode)
+        {
+            case TargetOffsetMode.TARGET_PLAYER:
+                offsetFromPlayer = Vector3.zero;
+                break;
+
+            case TargetOffsetMode.CIRCLE_LEFT:
+                offsetFromPlayer = -transform.right * offsetFromPlayerMagnitude;
+                break;
+
+            case TargetOffsetMode.CIRCLE_RIGHT:
+                offsetFromPlayer = transform.right * offsetFromPlayerMagnitude;
+                break;
+
+            case TargetOffsetMode.RETREAT:
+                offsetFromPlayer = -transform.forward * offsetFromPlayerMagnitude;
+                break;
+        }
+        yield return StartCoroutine(SetTargetOffsetState());
     }
 
     private IEnumerator SetOffensiveState()
@@ -47,6 +84,7 @@ public class Opponent : Fighter
         animator.SetFloat("distToOpponent", toPlayer.magnitude);
         moveDir = toPlayer.normalized;
         ApplyRootRotation(moveDir);
+        moveDir = (toPlayer + offsetFromPlayer).normalized;
         base.FighterUpdate();
     }
 }
