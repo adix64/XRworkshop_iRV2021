@@ -8,6 +8,7 @@ public class ThirdPersonCam : MonoBehaviour
     public Transform target;
     private Player player;
     public Vector3 cameraOffset;
+    public Vector3 aimingOffset;
     public float followSpeed = 3f;
     public float followSpeedKeepClose = 3f;
     public float zeroingSpeed = 10f;
@@ -47,5 +48,8 @@ public class ThirdPersonCam : MonoBehaviour
                                 Mathf.Min(cameraMoveDir.magnitude, Time.deltaTime * followSpeed *
                                 (1 + cameraMoveDir.magnitude * followSpeedKeepClose));
         }
+
+        if (player.aiming)
+            transform.position = player.transform.position + transform.TransformDirection(aimingOffset);
     }
 }

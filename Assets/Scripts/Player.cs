@@ -8,6 +8,7 @@ public class Player : Fighter
     public Vector3 oppAvgPos;
     public Vector3 toOpponent;
     public bool engagingOpponent = false;
+    public bool aiming = false;
 
     // Start is called before the first frame update
     private void Start()
@@ -27,8 +28,15 @@ public class Player : Fighter
         ApplyRootRotation();
         base.FighterUpdate();
         HandleAttack();
-        HandleJump();
+        HandleShooting();
+        HandleJumpAndRoll();
         IncrementTimers();
+    }
+
+    private void HandleShooting()
+    {
+        aiming = Input.GetButton("Fire2");
+        animator.SetBool("Aiming", aiming);
     }
 
     private void ApplyRootRotation()
@@ -61,6 +69,11 @@ public class Player : Fighter
         else
             oppAvgPos = transform.position;
         animator.SetFloat("distToOpponent", minDistanceToOpponent);
+
+        if (aiming)
+            lookDirection = Vector3.ProjectOnPlane(camera.forward, Vector3.up).normalized;
+        if (stateInfo.IsName("Roll"))
+            lookDirection = moveDir;
         base.ApplyRootRotation(lookDirection);
     }
 
@@ -71,16 +84,29 @@ public class Player : Fighter
 
     private void HandleAttack()
     {
-        if (Input.GetButtonDown("Fire1"))
+        animator.SetBool("Fire1Pressed", Input.GetButton("Fire1"));
+        if (!aiming && Input.GetButtonDown("Fire1"))
         {
             animator.SetTrigger("Punch");
             punchLookDir = toOpponent;
         }
     }
 
-    private void HandleJump()
+    private void HandleJumpAndRoll()
     {
-        if (grounded && timeSinceJumped > 0.25f && Input.GetButtonDown("Jump"))
+        if (!Input.GetButtonDown("Jump"))
+            return;
+
+        if (engagingOpponent)
+        {
+            animator.SetTrigger("Roll");
+            Vector3 rollDir = transform.forward;
+            if (moveDir.magnitude > 10e-3f)
+                rollDir = moveDir;
+            animator.SetFloat("RollX", rollDir.x);
+            animator.SetFloat("RollZ", rollDir.z);
+        }
+        else if (grounded && timeSinceJumped > 0.25f)
         {//saritura basic
             timeSinceJumped = 0f;
             animator.Play("Takeoff");

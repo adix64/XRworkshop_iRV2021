@@ -34,6 +34,7 @@ public class Fighter : MonoBehaviour
     protected void FighterUpdate()
     {
         stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        animator.SetFloat("currentStateNormalizedTime", stateInfo.normalizedTime);
 
         CheckGrounded();
 
@@ -47,6 +48,8 @@ public class Fighter : MonoBehaviour
 
     protected void ApplyRootRotation(Vector3 lookDir)
     {
+        if (stateInfo.IsName("Roll"))
+            return;
         float realRotSpeed = rotSpeed;
         if (stateInfo.IsTag("punch"))
         {
@@ -55,7 +58,7 @@ public class Fighter : MonoBehaviour
         }
         if (transform.position.y < minimumAllowedHeight)
             transform.position = initialPos;
-        if (moveDir.magnitude > 10e-3)
+        if (lookDir.magnitude > 10e-3)
         {//daca exista miscare
             Quaternion targetRotation = Quaternion.LookRotation(lookDir, Vector3.up);
             //roteste personajul animativ cu forward in directia deplasarii
@@ -115,6 +118,6 @@ public class Fighter : MonoBehaviour
         animator.SetFloat("Forward", characterSpaceMoveDir.z, 0.2f, Time.deltaTime);
         animator.SetFloat("Right", characterSpaceMoveDir.x, 0.2f, Time.deltaTime);
 
-        Debug.DrawLine(transform.position, transform.position + moveDir, Color.cyan);
+        //Debug.DrawLine(transform.position, transform.position + moveDir, Color.cyan);
     }
 }

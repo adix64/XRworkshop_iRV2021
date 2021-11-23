@@ -77,13 +77,17 @@ public class Opponent : Fighter
         toPlayer = Vector3.Scale(toPlayer, new Vector3(1, 0, 1));
 
         if (offensive && toPlayer.magnitude < attackDistance)
+        {
+            punchLookDir = toPlayer.normalized;
             animator.SetTrigger("Punch");
+        }
+
+        Debug.DrawLine(transform.position, transform.position + toPlayer.normalized, Color.magenta);
+        ApplyRootRotation(toPlayer.normalized);
 
         if (toPlayer.magnitude < stopDistance)
             toPlayer = Vector3.zero;
         animator.SetFloat("distToOpponent", toPlayer.magnitude);
-        moveDir = toPlayer.normalized;
-        ApplyRootRotation(moveDir);
         moveDir = (toPlayer + offsetFromPlayer).normalized;
         base.FighterUpdate();
     }
