@@ -54,19 +54,20 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\DieBhvr.cs" />
+    <Compile Include="Assets\Scripts\TimeScaleManager.cs" />
     <Compile Include="Assets\Scripts\TakeHitBhvr.cs" />
     <Compile Include="Assets\Scripts\GroundedBhvr.cs" />
     <Compile Include="Assets\Projectile.cs" />
     <Compile Include="Assets\Scripts\ShooterMechanics.cs" />
     <Compile Include="Assets\Scripts\Fighter.cs" />
     <Compile Include="Assets\Scripts\TakeoffBhvr.cs" />
+    <Compile Include="Assets\RollBhvr.cs" />
     <Compile Include="Assets\Scripts\PunchBhvr.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
     <Compile Include="Assets\Scripts\Opponent.cs" />
     <Compile Include="Assets\Scripts\ThirdPersonCam.cs" />
     <Compile Include="Assets\Scripts\HitBox.cs" />
-    <Compile Include="Assets\Scripts\TimeScaleManager.cs" />
-    <Compile Include="Assets\RollBhvr.cs" />
+    <Compile Include="Assets\WallRunCycleBhvr.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

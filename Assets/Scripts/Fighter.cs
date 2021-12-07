@@ -48,7 +48,7 @@ public class Fighter : MonoBehaviour
 
     protected void ApplyRootRotation(Vector3 lookDir)
     {
-        if (stateInfo.IsName("Roll"))
+        if (stateInfo.IsName("Roll") || stateInfo.IsTag("wallRun"))
             return;
         float realRotSpeed = rotSpeed;
         if (stateInfo.IsTag("punch"))
@@ -94,6 +94,8 @@ public class Fighter : MonoBehaviour
 
     protected void ApplyRootMotion()
     {
+        if (stateInfo.IsTag("wallRun"))
+            return;
         float velY = rigidbody.velocity.y; //componenta verticala a vitezei, calculata de Physics engine
         if (!animator.GetBool("Grounded") || timeSinceJumped < 0.25f)//in aer
         {
